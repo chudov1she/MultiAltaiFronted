@@ -4,21 +4,29 @@ FROM node:18-alpine AS builder
 # 2. Рабочая директория
 WORKDIR /app
 
-# 3. Копируем зависимости
+# 3. Аргумент для build-time переменной окружения
+ARG BACKEND_API_URL
+ENV BACKEND_API_URL=${BACKEND_API_URL}
+
+# 4. Копируем зависимости
 COPY package.json yarn.lock ./
 
-# 4. Устанавливаем зависимости
+# 5. Устанавливаем зависимости
 RUN yarn install --frozen-lockfile
 
-# 5. Копируем весь проект и собираем
+# 6. Копируем весь проект и собираем
 COPY . .
 RUN yarn build
 
-# 6. Production-образ
+# 7. Production-образ
 FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+# Переменная окружения для runtime (можно переопределить при запуске контейнера)
+ARG BACKEND_API_URL
+ENV BACKEND_API_URL=${BACKEND_API_URL}
 
 # Копируем только нужные файлы
 COPY --from=builder /app/package.json ./
