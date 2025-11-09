@@ -10,9 +10,10 @@ interface ListingGridProps {
   listings: Listing[];
   isLoading: boolean;
   formatPrice: (price: string) => string;
+  showHelicopter?: boolean;
 }
 
-const ListingGrid: React.FC<ListingGridProps> = ({ listings, isLoading, formatPrice }) => {
+const ListingGrid: React.FC<ListingGridProps> = ({ listings, isLoading, formatPrice, showHelicopter = true }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -69,15 +70,15 @@ Robinson R44 зарекомендовал себя как один из самы
     updated_at: new Date().toISOString(),
   }), []);
 
-  // Вставляем вертолёт в середину списка
+  // Вставляем вертолёт в середину списка (если включено)
   const listingsWithHelicopter = useMemo(() => {
-    if (listings.length === 0) return listings;
+    if (!showHelicopter || listings.length === 0) return listings;
     
     const middleIndex = Math.floor(listings.length / 2);
     const result = [...listings];
     result.splice(middleIndex, 0, helicopterListing);
     return result;
-  }, [listings, helicopterListing]);
+  }, [listings, helicopterListing, showHelicopter]);
 
   if (isLoading) {
     return (

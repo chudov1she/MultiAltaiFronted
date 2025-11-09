@@ -24,7 +24,7 @@ const RecommendedListings = () => {
 
         const response = await getLandPlots(params);
         
-        // Принудительно ограничиваем до 6 объектов
+        // Гарантируем ровно 6 объектов (без вертолёта)
         const limitedResults = response.results.slice(0, 6);
         setListings(limitedResults);
       } catch (error) {
@@ -77,6 +77,7 @@ const RecommendedListings = () => {
               listings={listings}
               isLoading={isLoading}
               formatPrice={formatPrice}
+              showHelicopter={false}
             />
           </div>
 
