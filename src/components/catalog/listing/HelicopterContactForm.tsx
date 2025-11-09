@@ -8,16 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-// Типы для формы обратной связи
-interface ContactRequestBody {
-  name: string;
-  phone: string;
-  email?: string | null;
-  user_message?: string | null;
-  request_type: string; // 'contact' для обратной связи
-  status: string; // 'new'
-}
-
 interface HelicopterContactFormProps {
   listingTitle: string;
 }
@@ -127,24 +117,26 @@ const HelicopterContactForm: React.FC<HelicopterContactFormProps> = ({ listingTi
 
     // Добавляем информацию о вертолёте в сообщение
     const fullMessage = message 
-      ? `Сообщение: ${message}\n\nИнтерес к: ${listingTitle}`
-      : `Интерес к: ${listingTitle}`;
+      ? `[ВЕРТОЛЁТ] ${listingTitle}\n\nСообщение: ${message}`
+      : `[ВЕРТОЛЁТ] ${listingTitle}`;
 
-    // Prepare data for API - отправляем как обратную связь
-    const requestData: ContactRequestBody = {
-      name,
+    // Prepare data for API - отправляем как в поддержку
+    const requestData = {
+      name: name.trim(),
       phone: cleanPhone,
-      email: email || null,
-      user_message: fullMessage,
-      request_type: 'contact', // Отправляем как обратную связь
-      status: 'new',
+      email: email.trim() || '',
+      message: fullMessage.trim(),
     };
 
     console.log('Submitting helicopter contact form with data:', requestData);
 
     try {
-      // Отправляем через API обратной связи
-      const response = await fetch('/api/v1/requests/', {
+      // Используем тот же endpoint, что и для поддержки
+      const { getApiBaseUrl } = await import('@/lib/api/utils');
+      const baseUrl = getApiBaseUrl();
+      const endpoint = '/v1/applications/contact';
+      
+      const response = await fetch(`${baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,8 +145,22 @@ const HelicopterContactForm: React.FC<HelicopterContactFormProps> = ({ listingTi
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Ошибка при отправке сообщения');
+        let errorMessage = 'Ошибка при отправке заявки';
+        try {
+          const errorData = await response.json();
+          // Backend может вернуть массив ошибок или объект с message
+          if (Array.isArray(errorData.message)) {
+            errorMessage = errorData.message.join(', ');
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (e) {
+          // Если не удалось распарсить JSON, используем статус
+          errorMessage = `Ошибка ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();

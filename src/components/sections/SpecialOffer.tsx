@@ -101,7 +101,7 @@ const SpecialOffer = () => {
 
                 {/* CTA кнопка - переход к объявлению */}
                 <Link 
-                  href="/catalog/land-plots/zemliya-beregovaya"
+                  href="/catalog/land-plots/земля-береговая"
                   className="w-full bg-[#00B4D8] hover:bg-[#0095c6] text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl transition-colors duration-300 flex items-center justify-center gap-2 group text-sm sm:text-base"
                 >
                   <span>Смотреть подробнее</span>

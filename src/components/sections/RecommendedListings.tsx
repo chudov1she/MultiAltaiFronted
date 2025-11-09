@@ -90,7 +90,7 @@ const RecommendedListings = () => {
           >
             <Link 
               href="/catalog"
-              className="bg-[#00B4D8] hover:bg-[#0095c6] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-xl gap-2 sm:gap-3 flex items-center justify-center"
+              className="bg-[#00B4D8] hover:bg-[#0095c6] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-xl gap-2 sm:gap-3 flex items-center justify-center"
             >
               <span>Смотреть все объекты</span>
               <ArrowRight className="w-6 h-6" />

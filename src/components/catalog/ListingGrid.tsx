@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Listing } from '@/types/catalog';
+import { Listing, Helicopter } from '@/types/catalog';
 import ListingCard from './ListingCard';
 import { Home } from 'lucide-react';
 
@@ -23,6 +23,61 @@ const ListingGrid: React.FC<ListingGridProps> = ({ listings, isLoading, formatPr
       },
     },
   };
+
+  // Создаём объект вертолёта для вставки в каталог
+  const helicopterListing: Helicopter = useMemo(() => ({
+    id: 'helicopter-robinson-r44',
+    slug: 'robinson-r44',
+    title: 'Вертолёт Robinson R44 R2',
+    description: `Robinson R44 R2 2013 года выпуска находится в **отличном техническом состоянии** с налетом всего 1790 часов при ресурсе 2200 часов. До следующего технического обслуживания осталось 410 часов, что делает вертолёт идеальным выбором для немедленного ввода в эксплуатацию.
+
+Вертолёт полностью обслужен и готов к полётам. Все системы работают безупречно, что гарантирует безопасность и надёжность в любых условиях. Новый салон обеспечивает максимальный комфорт для VIP-клиентов и бизнес-полётов.
+
+**Премиальное оборудование включает:**
+- Две гарнитуры Bose для комфортного общения
+- Радиовысотометр для повышения безопасности полётов
+- Дополнительные баки на 120 литров для значительного увеличения дальности полёта
+- Буксировочные колёса для удобства наземного перемещения
+
+Robinson R44 зарекомендовал себя как один из самых надёжных и востребованных вертолётов в мире. Отличное соотношение цена-качество, высокая ликвидность и стабильный спрос делают его привлекательной инвестицией для частных владельцев, авиакомпаний и туристических фирм.`,
+    price: '25000000',
+    listing_status: 'published',
+    location: {
+      id: 0,
+      locality: 'Екатеринбург',
+      region: '',
+      address_line: 'VIP транспорт • Приватные полёты',
+      latitude: '',
+      longitude: '',
+    },
+    media_files: [
+      {
+        id: 0,
+        url: '/images/helicopter/helicopter-1.jpg',
+        file_url: '/images/helicopter/helicopter-1.jpg',
+        is_main: true,
+        type: 'image',
+      },
+    ],
+    model: 'Robinson R44 R2',
+    capacity: '4 места',
+    engine: '',
+    max_speed: '',
+    range: '',
+    features: [],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }), []);
+
+  // Вставляем вертолёт в середину списка
+  const listingsWithHelicopter = useMemo(() => {
+    if (listings.length === 0) return listings;
+    
+    const middleIndex = Math.floor(listings.length / 2);
+    const result = [...listings];
+    result.splice(middleIndex, 0, helicopterListing);
+    return result;
+  }, [listings, helicopterListing]);
 
   if (isLoading) {
     return (
@@ -58,7 +113,7 @@ const ListingGrid: React.FC<ListingGridProps> = ({ listings, isLoading, formatPr
       animate="visible"
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
     >
-      {listings.map((listing) => (
+      {listingsWithHelicopter.map((listing) => (
         <ListingCard 
           key={listing.id} 
           listing={listing} 
