@@ -93,9 +93,9 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ listing }) => {
         >
                      <h2 className="text-xl font-semibold text-[#011315] mb-4">Закрепленные документы</h2>
           <div className="space-y-3">
-            {documents.map((document) => (
+            {documents.map((document, index) => (
               <div
-                key={document.id}
+                key={document.id || `document-${index}-${document.file_url}`}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors"
               >
                 <div className="flex items-center gap-3">
@@ -163,9 +163,9 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ listing }) => {
           {Object.entries(featuresByType).map(([type, features]) => (
             <div key={type} className="mb-6 last:mb-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {features.map((feature) => (
+                {features.map((feature, index) => (
                   <div
-                    key={feature.id}
+                    key={`${type}-${feature.id || index}-${feature.name}`}
                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl"
                   >
                     <div className="w-2 h-2 rounded-full bg-[#0095c6]"></div>
@@ -188,19 +188,19 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ listing }) => {
         >
           <h2 className="text-xl font-semibold text-[#011315] mb-4">Дополнительные характеристики</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.entries(listing.attributes).map(([key, value]) => {
-              if (value === null || value === '') return null;
-              
-              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              const displayValue = typeof value === 'boolean' ? (value ? 'Да' : 'Нет') : String(value);
-              
-              return (
-                <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
-                  <span className="text-gray-600">{label}:</span>
-                  <span className="font-medium text-[#011315]">{displayValue}</span>
-                </div>
-              );
-            })}
+            {Object.entries(listing.attributes)
+              .filter(([key, value]) => value !== null && value !== '')
+              .map(([key, value]) => {
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const displayValue = typeof value === 'boolean' ? (value ? 'Да' : 'Нет') : String(value);
+                
+                return (
+                  <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl">
+                    <span className="text-gray-600">{label}:</span>
+                    <span className="font-medium text-[#011315]">{displayValue}</span>
+                  </div>
+                );
+              })}
           </div>
         </motion.div>
       )}

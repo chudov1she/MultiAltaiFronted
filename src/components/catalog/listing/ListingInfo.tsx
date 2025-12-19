@@ -208,23 +208,26 @@ const ListingInfo: React.FC<ListingInfoProps> = ({ listing }) => {
                   <span className="text-gray-600">Кадастровые номера:</span>
                 </div>
                 <div className="ml-7 space-y-2">
-                  {numbers.map((number, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                      <span className="font-mono text-sm text-[#011315]">
-                        {String(number).trim()}
-                      </span>
-                      <button 
-                        className={`text-xs font-medium transition-all duration-200 ${
-                          copiedIndex === index 
-                            ? 'text-green-600 bg-green-100 px-2 py-1 rounded-md' 
-                            : 'text-[#0095c6] hover:text-[#007a9e] hover:bg-blue-50 px-2 py-1 rounded-md'
-                        }`}
-                        onClick={() => handleCopy(String(number).trim(), index)}
-                      >
-                        {copiedIndex === index ? 'Скопировано!' : 'Копировать'}
-                      </button>
-                    </div>
-                  ))}
+                  {numbers.map((number, index) => {
+                    const numberStr = String(number).trim();
+                    return (
+                      <div key={`cadastral-${numberStr}-${index}`} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                        <span className="font-mono text-sm text-[#011315]">
+                          {numberStr}
+                        </span>
+                        <button 
+                          className={`text-xs font-medium transition-all duration-200 ${
+                            copiedIndex === index 
+                              ? 'text-green-600 bg-green-100 px-2 py-1 rounded-md' 
+                              : 'text-[#0095c6] hover:text-[#007a9e] hover:bg-blue-50 px-2 py-1 rounded-md'
+                          }`}
+                          onClick={() => handleCopy(numberStr, index)}
+                        >
+                          {copiedIndex === index ? 'Скопировано!' : 'Копировать'}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
